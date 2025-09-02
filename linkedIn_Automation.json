@@ -1,0 +1,122 @@
+{
+  "name": "linkedIn_Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "73fd098c-6bd5-44f7-992e-dba5a6a6e372",
+      "name": "When chat message received",
+      "webhookId": "0944238a-66d4-4294-85a7-de83c6864337"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are a LinkedIn Post Assistant. \n- When the user sends a message, create a LinkedIn post text.\n- Keep it professional, engaging, and under 500 characters. \n- Pass the text forward to the next node without extra explanation."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "3d6680eb-0fee-41ca-a1b7-f1807ab50087",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-4-maverick:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        296,
+        224
+      ],
+      "id": "852ff291-4c59-4a47-96fd-9fa8c2c1bb80",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "TDfCMp9ryO8bkY2u",
+          "name": "OpenRouter account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "person": "dt7IxlECtQ",
+        "text": "={{$node[\"AI Agent\"].json[\"output\"]}}\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        576,
+        0
+      ],
+      "id": "b09dedae-c450-4368-a1c1-5a52cfdd1f3a",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "e5M0wQC5OSZlLgFT",
+          "name": "LinkedIn account 1"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "34043122-0bed-4970-95c9-1072c5328516",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0bb9f7c0e1818fb2e563aff2759a42429ab87f78852434cde9cc9dd51d2870bb"
+  },
+  "id": "RNwRRevNsvm3opqz",
+  "tags": []
+}
